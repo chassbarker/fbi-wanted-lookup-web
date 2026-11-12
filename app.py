@@ -153,6 +153,8 @@ def main():
     [data-testid="stCaptionContainer"] p {font-size: .9rem; line-height: 1.6;}
     [data-testid="stForm"] [data-baseweb="select"] > div {border-color: #64748b;}
     @media (max-width: 600px) {
+        /* Leave scroll space below the footer for hosting controls and safe areas. */
+        .block-container {padding-bottom: calc(10rem + env(safe-area-inset-bottom, 0px)) !important;}
         .block-container {padding-left: 1rem; padding-right: 1rem;}
         [data-testid="stForm"] {padding: 1rem;}
         h1, h2, h3 {overflow-wrap: anywhere;}
