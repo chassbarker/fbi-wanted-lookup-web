@@ -50,7 +50,7 @@ def fetch_listings(office, page, classification=""):
 
 
 def main():
-    st.set_page_config(page_title="FBI Wanted Lookup | Chassidy Barker", page_icon="🔎", layout="centered")
+    st.set_page_config(page_title="FBI Public Case Explorer | Chassidy Barker", page_icon="🔎", layout="centered")
     st.markdown("""
     <style>
     .stApp {background: #f4f6fa; color: #17263d;}
@@ -70,9 +70,9 @@ def main():
     .empty-state {text-align: center; border: 1px dashed #cbd5e3; border-radius: 16px; padding: 2.2rem 1rem; margin-top: 1.8rem; background: #ffffff80;}
     .empty-state strong {color: #243b57; font-size: 1.1rem;}
     </style>
-    <div class="eyebrow">PUBLIC RECORDS EXPLORER · BY CHASSIDY BARKER</div>
+    <div class="eyebrow">INDEPENDENT PROJECT BY CHASSIDY BARKER</div>
     """, unsafe_allow_html=True)
-    st.title("FBI Wanted Lookup")
+    st.title("FBI Public Case Explorer")
     st.markdown('<p class="intro">Explore public FBI notices in one place. Search by field office, read a brief case summary, and go directly to the official listing.</p>', unsafe_allow_html=True)
     with st.form("search"):
         st.subheader("Find public listings")
