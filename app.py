@@ -126,7 +126,7 @@ def main():
     .stFormSubmitButton button p {color: white !important;}
     .stFormSubmitButton button:hover {background: #113b51;}
     [data-testid="stLinkButton"] a {border: 1px solid #c6d8e2; background: white; border-radius: 9px;}
-    [data-testid="stCaptionContainer"] p {color: #334155 !important;}
+    [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p, [data-testid="stCaptionContainer"] span {color: #243247 !important; opacity: 1 !important;}
     .eyebrow {font-size: .72rem; font-weight: 750; letter-spacing: .14em; color: #174c66; margin-bottom: .5rem;}
     .intro {font-size: 1.08rem; max-width: 620px; line-height: 1.7; margin-bottom: 1.5rem;}
     .empty-state {text-align: center; border: 1px dashed #cbd5e3; border-radius: 16px; padding: 2.2rem 1rem; margin-top: 1.8rem; background: #ffffff80;}
