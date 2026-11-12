@@ -119,8 +119,15 @@ def main():
     h1, h2, h3 {color: #14253e !important; letter-spacing: -.025em;}
     h1 {font-size: clamp(2.2rem, 6vw, 3.5rem) !important; font-weight: 800 !important;}
     p, label, .stCaption {color: #47576f;}
-    [data-testid="stForm"] {background: white; border: 1px solid #dbe2ed; border-radius: 18px; padding: 1.5rem; box-shadow: 0 8px 28px #17263d08;}
-    [data-testid="stVerticalBlockBorderWrapper"] {border-radius: 16px;}
+    [data-testid="stForm"] {background: white; border: 1px solid #94a3b8; border-radius: 18px; padding: 1.5rem; box-shadow: 0 6px 20px rgba(23, 38, 61, .09);}
+    /* Target explicit bordered containers, not every layout wrapper. */
+    [data-testid="stVerticalBlockBorderWrapper"][style*="border:"],
+    [data-testid="stVerticalBlock"][style*="border:"] {
+        border: 1px solid #94a3b8 !important;
+        border-radius: 16px !important;
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(23, 38, 61, .05);
+    }
     [data-testid="stTextInput"] input {color: #17263d; background: #f8fafd;}
     .stFormSubmitButton button {background: #174c66; border: 0; border-radius: 10px; min-height: 3rem; font-weight: 650;}
     .stFormSubmitButton button p {color: white !important;}
