@@ -136,7 +136,9 @@ def main():
     [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p, [data-testid="stCaptionContainer"] span {color: #243247 !important; opacity: 1 !important;}
     .eyebrow {font-size: .72rem; font-weight: 750; letter-spacing: .14em; color: #174c66; margin-bottom: .5rem;}
     .intro {font-size: 1.08rem; max-width: 620px; line-height: 1.7; margin-bottom: 1.5rem;}
-    .empty-state {text-align: center; border: 1px dashed #cbd5e3; border-radius: 16px; padding: 2.2rem 1rem; margin-top: 1.8rem; background: #ffffff80;}
+    .empty-state {text-align: center; border: 1px dashed #cbd5e3; border-radius: 16px; padding: 1.25rem 1rem; margin-top: 1.25rem; margin-bottom: .75rem; background: #ffffff80;}
+    .empty-state p:last-child {margin-bottom: 0;}
+    [data-testid="stExpander"] {margin-top: .5rem;}
     .empty-state strong {color: #243b57; font-size: 1.1rem;}
 
     /* Preserve visible keyboard focus and comfortable touch targets. */
