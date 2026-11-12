@@ -14,6 +14,67 @@ import streamlit as st
 
 API_URL = "https://api.fbi.gov/wanted/v1/list"
 
+# Display labels map to FBI field office identifiers.
+FIELD_OFFICES = {
+    "All offices": "",
+    "Albany": "albany",
+    "Albuquerque": "albuquerque",
+    "Anchorage": "anchorage",
+    "Atlanta": "atlanta",
+    "Baltimore": "baltimore",
+    "Birmingham": "birmingham",
+    "Boston": "boston",
+    "Buffalo": "buffalo",
+    "Charlotte": "charlotte",
+    "Chicago": "chicago",
+    "Cincinnati": "cincinnati",
+    "Cleveland": "cleveland",
+    "Columbia": "columbia",
+    "Dallas": "dallas",
+    "Denver": "denver",
+    "Detroit": "detroit",
+    "El Paso": "elpaso",
+    "Honolulu": "honolulu",
+    "Houston": "houston",
+    "Indianapolis": "indianapolis",
+    "Jackson": "jackson",
+    "Jacksonville": "jacksonville",
+    "Kansas City": "kansascity",
+    "Knoxville": "knoxville",
+    "Las Vegas": "lasvegas",
+    "Little Rock": "littlerock",
+    "Los Angeles": "losangeles",
+    "Louisville": "louisville",
+    "Memphis": "memphis",
+    "Miami": "miami",
+    "Milwaukee": "milwaukee",
+    "Minneapolis": "minneapolis",
+    "Mobile": "mobile",
+    "New Haven": "newhaven",
+    "New Orleans": "neworleans",
+    "New York": "newyork",
+    "Newark": "newark",
+    "Norfolk": "norfolk",
+    "Oklahoma City": "oklahomacity",
+    "Omaha": "omaha",
+    "Philadelphia": "philadelphia",
+    "Phoenix": "phoenix",
+    "Pittsburgh": "pittsburgh",
+    "Portland": "portland",
+    "Richmond": "richmond",
+    "Sacramento": "sacramento",
+    "Salt Lake City": "saltlakecity",
+    "San Antonio": "sanantonio",
+    "San Diego": "sandiego",
+    "San Francisco": "sanfrancisco",
+    "San Juan": "sanjuan",
+    "Seattle": "seattle",
+    "Springfield": "springfield",
+    "St. Louis": "stlouis",
+    "Tampa": "tampa",
+    "Washington": "washington"
+}
+
 
 def clean_text(value, fallback="Not provided"):
     """Convert API HTML snippets into plain display text."""
@@ -77,7 +138,7 @@ def main():
     with st.form("search"):
         st.subheader("Find public listings")
         st.caption("Field offices cover regions, so results may include nearby cities.")
-        office_name = st.text_input("FBI field office", placeholder="San Antonio, Miami, or leave blank for all offices", max_chars=60)
+        office_name = st.selectbox("FBI field office", list(FIELD_OFFICES))
         listing_types = {"All listings": "", "Missing-person posters": "missing", "Ten Most Wanted posters": "ten", "Seeking information": "information"}
         listing_type = st.selectbox("Listing type", list(listing_types))
         st.caption("Types follow FBI poster classifications. Other missing-person notices may also appear under All listings. Posters may include captured or historical notices; check the official page for status.")
@@ -86,7 +147,7 @@ def main():
         limit = right.selectbox("Listings to display", [5, 10, 20])
         submitted = st.form_submit_button("Search FBI listings", type="primary", use_container_width=True)
     if submitted:
-        office = re.sub(r"[\s-]+", "", office_name.strip().lower())
+        office = FIELD_OFFICES[office_name]
         if office and not office.isascii() or (office and not office.isalpha()):
             st.error("Enter a field office name using letters and spaces.")
         else:
@@ -113,14 +174,28 @@ def main():
             st.caption(f"Showing {min(limit, len(items))} of {len(items)} listings returned on this page.")
             for index, item in enumerate(items[:limit], start=1):
                 with st.container(border=True):
+                    subjects = item.get("subjects")
+                    if not isinstance(subjects, list):
+                        subjects = []
+                    categories = [clean_text(value, "") for value in subjects if isinstance(value, str)]
+                    category = " / ".join(value for value in categories if value) or {
+                        "missing": "Missing-person poster",
+                        "ten": "Ten Most Wanted poster",
+                        "information": "Seeking information",
+                    }.get(item.get("poster_classification"), "Public notice")
                     st.caption(f"PUBLIC LISTING {index:02d}")
+                    st.text(f"FBI category: {category}")
                     st.subheader(clean_text(item.get("title"), "Untitled listing"))
                     st.text(clean_text(item.get("description"), "No description provided."))
                     link = official_link(item.get("url"))
                     if link:
                         st.link_button("View official FBI listing", link)
     else:
-        st.markdown('<div class="empty-state"><strong>Your search starts here</strong><p>Choose a field office above, or leave it blank to explore all offices.<br>Results can include wanted persons, missing persons, and requests for information.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="empty-state"><strong>Your search starts here</strong><p>Choose a field office above, or select All offices to explore more listings.<br>Results can include wanted persons, missing persons, and requests for information.</p></div>', unsafe_allow_html=True)
+    with st.expander("About this project"):
+        st.write("I started this as a Python class assignment and expanded it into a public web app. My interest in true crime made it a practical way to learn how programs retrieve and display information from an API.")
+        st.write("Built with Python, Streamlit, and requests. The app uses HTTP requests, JSON parsing, five-minute caching, and error handling. ChatGPT assisted with development.")
+        st.markdown("[View the code on GitHub](https://github.com/chassbarker/fbi-wanted-lookup-web) · [Visit my portfolio](https://www.chassidybarker.com/)")
     st.divider()
     st.caption("Source: FBI Wanted API · Independent educational project; not affiliated with the FBI. Listings may include wanted persons, missing persons, and requests for information. A listing does not establish guilt. Check the official page for current details.")
     st.markdown("[FBI data source and documentation](https://www.fbi.gov/wanted/api)")
