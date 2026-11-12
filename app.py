@@ -197,7 +197,7 @@ def main():
         st.write("Built with Python, Streamlit, and requests. The app uses HTTP requests, JSON parsing, five-minute caching, and error handling. ChatGPT assisted with development.")
         st.markdown("[View the code on GitHub](https://github.com/chassbarker/fbi-wanted-lookup-web) · [Visit my portfolio](https://www.chassidybarker.com/)")
     st.divider()
-    st.caption("Source: FBI Wanted API · Independent educational project; not affiliated with the FBI. Listings may include wanted persons, missing persons, and requests for information. A listing does not establish guilt. Check the official page for current details.")
+    st.caption("Data provided by the FBI Wanted API. Independent educational project; not affiliated with the FBI. Listings include wanted persons, missing persons, and requests for information. Inclusion does not establish guilt. Visit the official FBI listing for current details.")
     st.markdown("[FBI data source and documentation](https://www.fbi.gov/wanted/api)")
 
 
