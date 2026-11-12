@@ -131,6 +131,23 @@ def main():
     .intro {font-size: 1.08rem; max-width: 620px; line-height: 1.7; margin-bottom: 1.5rem;}
     .empty-state {text-align: center; border: 1px dashed #cbd5e3; border-radius: 16px; padding: 2.2rem 1rem; margin-top: 1.8rem; background: #ffffff80;}
     .empty-state strong {color: #243b57; font-size: 1.1rem;}
+
+    /* Preserve visible keyboard focus and comfortable touch targets. */
+    .stApp :is(a, button, input, [role="combobox"], summary):focus-visible {
+        outline: 3px solid #174c66 !important;
+        outline-offset: 3px !important;
+        box-shadow: 0 0 0 2px white !important;
+    }
+    [data-testid="stLinkButton"] a, .stApp button, [role="combobox"] {min-height: 44px;}
+    .stApp a {color: #174c66; text-decoration: underline; text-underline-offset: .18em;}
+    [data-testid="stText"] pre {white-space: pre-wrap !important; overflow-wrap: anywhere; color: #243247; font-family: inherit; line-height: 1.6;}
+    [data-testid="stCaptionContainer"] p {font-size: .9rem; line-height: 1.6;}
+    [data-testid="stForm"] [data-baseweb="select"] > div {border-color: #64748b;}
+    @media (max-width: 600px) {
+        .block-container {padding-left: 1rem; padding-right: 1rem;}
+        [data-testid="stForm"] {padding: 1rem;}
+        h1, h2, h3 {overflow-wrap: anywhere;}
+    }
     </style>
     <div class="eyebrow">INDEPENDENT PROJECT BY CHASSIDY BARKER</div>
     """, unsafe_allow_html=True)
@@ -155,6 +172,7 @@ def main():
             try:
                 with st.spinner("Retrieving public listings..."):
                     items, retrieved = fetch_listings(office, int(page), listing_types[listing_type])
+                st.markdown(f'<div role="status" aria-live="polite">{len(items)} listings returned on this page.</div>', unsafe_allow_html=True)
                 st.session_state["results"] = (items, retrieved, (office_name.strip() or "All offices") + " / " + listing_type, int(page), limit)
             except requests.Timeout:
                 st.session_state.pop("results", None)
@@ -188,9 +206,10 @@ def main():
                     st.text(f"FBI category: {category}")
                     st.subheader(clean_text(item.get("title"), "Untitled listing"))
                     st.text(clean_text(item.get("description"), "No description provided."))
+                    title = clean_text(item.get("title"), "Untitled listing")
                     link = official_link(item.get("url"))
                     if link:
-                        st.link_button("View official FBI listing", link)
+                        st.link_button(f"View FBI listing: {title}", link, use_container_width=True)
     else:
         st.markdown('<div class="empty-state"><strong>Your search starts here</strong><p>Choose a field office above, or select All offices to explore more listings.<br>Results can include wanted persons, missing persons, and requests for information.</p></div>', unsafe_allow_html=True)
     with st.expander("About this project"):
