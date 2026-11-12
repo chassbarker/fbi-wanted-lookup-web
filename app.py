@@ -33,9 +33,11 @@ def official_link(value):
 
 
 @st.cache_data(ttl=300, max_entries=100, show_spinner=False)
-def fetch_listings(office, page):
+def fetch_listings(office, page, classification=""):
     """Fetch one page and cache identical searches for five minutes."""
     params = {"page": page}
+    if classification:
+        params["poster_classification"] = classification
     if office:
         params["field_offices"] = office
     response = requests.get(API_URL, params=params, timeout=15)
@@ -76,6 +78,9 @@ def main():
         st.subheader("Find public listings")
         st.caption("Field offices cover regions, so results may include nearby cities.")
         office_name = st.text_input("FBI field office", placeholder="San Antonio, Miami, or leave blank for all offices", max_chars=60)
+        listing_types = {"All listings": "", "Missing-person posters": "missing", "Ten Most Wanted posters": "ten", "Seeking information": "information"}
+        listing_type = st.selectbox("Listing type", list(listing_types))
+        st.caption("Types follow FBI poster classifications. Other missing-person notices may also appear under All listings. Posters may include captured or historical notices; check the official page for status.")
         left, right = st.columns(2)
         page = left.number_input("Results page", min_value=1, max_value=1000, value=1, step=1)
         limit = right.selectbox("Listings to display", [5, 10, 20])
@@ -87,8 +92,8 @@ def main():
         else:
             try:
                 with st.spinner("Retrieving public listings..."):
-                    items, retrieved = fetch_listings(office, int(page))
-                st.session_state["results"] = (items, retrieved, office_name.strip() or "All offices", int(page), limit)
+                    items, retrieved = fetch_listings(office, int(page), listing_types[listing_type])
+                st.session_state["results"] = (items, retrieved, (office_name.strip() or "All offices") + " / " + listing_type, int(page), limit)
             except requests.Timeout:
                 st.session_state.pop("results", None)
                 st.error("The FBI service took too long to respond. Please try again later.")
