@@ -49,10 +49,32 @@ def fetch_listings(office, page):
 
 def main():
     st.set_page_config(page_title="FBI Wanted Lookup | Chassidy Barker", page_icon="🔎", layout="centered")
-    st.caption("A PYTHON API PROJECT BY CHASSIDY BARKER")
+    st.markdown("""
+    <style>
+    .stApp {background: #f4f6fa; color: #17263d;}
+    .block-container {max-width: 940px; padding-top: 2.5rem; padding-bottom: 3rem;}
+    h1, h2, h3 {color: #14253e !important; letter-spacing: -.025em;}
+    h1 {font-size: clamp(2.2rem, 6vw, 3.5rem) !important; font-weight: 800 !important;}
+    p, label, .stCaption {color: #47576f;}
+    [data-testid="stForm"] {background: white; border: 1px solid #dbe2ed; border-radius: 18px; padding: 1.5rem; box-shadow: 0 8px 28px #17263d08;}
+    [data-testid="stVerticalBlockBorderWrapper"] {border-radius: 16px;}
+    [data-testid="stTextInput"] input {color: #17263d; background: #f8fafd;}
+    .stFormSubmitButton button {background: #174c66; border: 0; border-radius: 10px; min-height: 3rem; font-weight: 650;}
+    .stFormSubmitButton button p {color: white !important;}
+    .stFormSubmitButton button:hover {background: #113b51;}
+    [data-testid="stLinkButton"] a {border: 1px solid #c6d8e2; background: white; border-radius: 9px;}
+    .eyebrow {font-size: .72rem; font-weight: 750; letter-spacing: .14em; color: #174c66; margin-bottom: .5rem;}
+    .intro {font-size: 1.08rem; max-width: 620px; line-height: 1.7; margin-bottom: 1.5rem;}
+    .empty-state {text-align: center; border: 1px dashed #cbd5e3; border-radius: 16px; padding: 2.2rem 1rem; margin-top: 1.8rem; background: #ffffff80;}
+    .empty-state strong {color: #243b57; font-size: 1.1rem;}
+    </style>
+    <div class="eyebrow">PUBLIC RECORDS EXPLORER · BY CHASSIDY BARKER</div>
+    """, unsafe_allow_html=True)
     st.title("FBI Wanted Lookup")
-    st.write("Explore public FBI listings by field office. Find case descriptions and open the official pages for details.")
+    st.markdown('<p class="intro">Explore public FBI notices in one place. Search by field office, read a brief case summary, and go directly to the official listing.</p>', unsafe_allow_html=True)
     with st.form("search"):
+        st.subheader("Find public listings")
+        st.caption("Field offices cover regions, so results may include nearby cities.")
         office_name = st.text_input("FBI field office", placeholder="San Antonio, Miami, or leave blank for all offices", max_chars=60)
         left, right = st.columns(2)
         page = left.number_input("Results page", min_value=1, max_value=1000, value=1, step=1)
@@ -78,19 +100,22 @@ def main():
                 st.error("The service returned an unexpected response. Please try again later.")
     if "results" in st.session_state:
         items, retrieved, label, selected_page, limit = st.session_state["results"]
-        st.subheader(label)
+        st.subheader(f"Results · {label.title()}")
         st.caption(f"Page {selected_page} · Retrieved {retrieved} · Identical searches cached for five minutes")
         if not items:
             st.info("No listings found on this page. Check the office name or try page 1.")
         else:
             st.caption(f"Showing {min(limit, len(items))} of {len(items)} listings returned on this page.")
-            for item in items[:limit]:
+            for index, item in enumerate(items[:limit], start=1):
                 with st.container(border=True):
+                    st.caption(f"PUBLIC LISTING {index:02d}")
                     st.subheader(clean_text(item.get("title"), "Untitled listing"))
                     st.text(clean_text(item.get("description"), "No description provided."))
                     link = official_link(item.get("url"))
                     if link:
                         st.link_button("View official FBI listing", link)
+    else:
+        st.markdown('<div class="empty-state"><strong>Your search starts here</strong><p>Choose a field office above, or leave it blank to explore all offices.<br>Results can include wanted persons, missing persons, and requests for information.</p></div>', unsafe_allow_html=True)
     st.divider()
     st.caption("Source: FBI Wanted API · Independent educational project; not affiliated with the FBI. Listings may include wanted persons, missing persons, and requests for information. A listing does not establish guilt. Check the official page for current details.")
     st.markdown("[FBI data source and documentation](https://www.fbi.gov/wanted/api)")
